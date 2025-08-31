@@ -13,10 +13,10 @@ import com.evio.notes.ui.theme.LightColors
 import com.example.evionotes.R
 
 val InterFontFamily = FontFamily(
-    Font(R.font.inter_regular, FontWeight.Normal),
-    Font(R.font.inter_medium, FontWeight.Medium),
-    Font(R.font.inter_semibold, FontWeight.SemiBold),
-    Font(R.font.inter_bold, FontWeight.Bold)
+    Font(R.font.inter_28pt_regular, FontWeight.Normal),
+    Font(R.font.inter_28pt_medium, FontWeight.Medium),
+    Font(R.font.inter_28pt_semibold, FontWeight.SemiBold),
+    Font(R.font.inter_28pt_bold, FontWeight.Bold)
 )
 
 private val LightColorScheme = lightColorScheme(
