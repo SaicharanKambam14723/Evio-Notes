@@ -10,11 +10,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.notes"
+    namespace = "com.example.evionotes"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.notes"
+        applicationId = "com.example.evionotes"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
