@@ -21,7 +21,7 @@ interface NoteDAO {
     suspend fun deleteNote(note: NoteEntity)
 
     @Query("SELECT * FROM notes WHERE user_id = :userId ORDER BY timestamp DESC")
-    suspend fun getNotesByUserId(userId: Int): Flow<List<NoteEntity>>
+    fun getNotesByUserId(userId: Int): Flow<List<NoteEntity>>
 
     @Query("SELECT * FROM notes WHERE note_id = :noteId")
     suspend fun getNoteById(noteId: Int): NoteEntity?

@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import com.evio.notes.R
 import com.evio.notes.ui.theme.DarkColors
 import com.evio.notes.ui.theme.LightColors
-import com.example.evionotes.R
 
 val InterFontFamily = FontFamily(
     Font(R.font.inter_28pt_regular, FontWeight.Normal),

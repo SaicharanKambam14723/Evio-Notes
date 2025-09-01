@@ -1,29 +1,25 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.dagger.hilt.android")
-    kotlin("plugin.serialization") version "2.1.20"
-    id("com.google.devtools.ksp")
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace = "com.example.evionotes"
+    namespace = "com.evio.notes"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.evionotes"
-        minSdk = 24
+        applicationId = "com.evio.notes"
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -35,80 +31,89 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17) // or JVM_11, depending on your setup
-        }
+        jvmToolchain(17)
     }
 
     buildFeatures {
         compose = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
+    }
     packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+        resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
     }
 }
 
 dependencies {
+    implementation(platform(libs.compose.bom))
 
+    // Core
+    implementation(libs.core.ktx)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.activity.compose)
+    implementation(libs.navigation.compose)
+    implementation(libs.splashscreen)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx.v293)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.activity.compose)
+    // Compose
+    implementation(libs.compose.ui)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
 
-    // Compose BOM
-    implementation(platform("androidx.compose:compose-bom:${libs.versions.composeBomVersion.get()}"))
-    androidTestImplementation(platform(libs.androidx.compose.bom.v20250801))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-
-    // Test
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform("androidx.compose:compose-bom:${libs.versions.composeBomVersion.get()}"))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-
-    // Navigation
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.kotlinx.serialization.json)
-
-    // Room (Database)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    ksp(libs.androidx.room.compiler)
-
-    // Hilt (DI)
-    implementation(libs.hilt.android)
-    ksp(libs.google.hilt.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
-
-    // ✅ Coil (Image Loading in Compose)
-    implementation(libs.coil.compose)
-
-    // ✅ Security (Encrypted Notes Vault)
-    implementation(libs.androidx.security.crypto.ktx)
-
-    // ✅ Markdown Rendering (for full markdown support)
-    implementation(libs.multiplatform.markdown.renderer)
-
-    // ✅ Accompanist (for system UI controller, permissions, animations if needed)
+    // Accompanist
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.accompanist.permissions)
 
-    // ✅ Lifecycle & Coroutines
-    implementation(libs.androidx.lifecycle.runtime.ktx.v293)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.kotlinx.coroutines.android)
+    // Async / Serialization
+    implementation(libs.coroutines.android)
+    implementation(libs.serialization.json)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    // DataStore
+    implementation(libs.datastore.preferences)
+
+    // Work / Paging
+    implementation(libs.work.runtime.ktx)
+    implementation(libs.paging.runtime.ktx)
+
+    // Networking
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.serialization)
+
+    // Coil
+    implementation(libs.coil.compose)
+
+    // Markdown
+    implementation(libs.multiplatform.markdown.renderer)
+
+    // Debug
+    debugImplementation(libs.leakcanary.android)
+
+    // Tests
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.junit.ext)
+    androidTestImplementation(libs.espresso.core)
+    // Test rules and transitive dependencies:
+    val compose_version = "1.7.0"
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
+// Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
 }
