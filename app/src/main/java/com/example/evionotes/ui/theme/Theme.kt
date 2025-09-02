@@ -1,58 +1,54 @@
 package com.example.evionotes.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import com.evio.notes.R
-import com.evio.notes.ui.theme.DarkColors
-import com.evio.notes.ui.theme.LightColors
+import com.evio.notes.ui.theme.DarkBackground
+import com.evio.notes.ui.theme.DarkOnBackground
+import com.evio.notes.ui.theme.DarkOnPrimary
+import com.evio.notes.ui.theme.DarkOnSurface
+import com.evio.notes.ui.theme.DarkPrimary
+import com.evio.notes.ui.theme.DarkSurface
+import com.evio.notes.ui.theme.LightBackground
+import com.evio.notes.ui.theme.LightOnBackground
+import com.evio.notes.ui.theme.LightOnPrimary
+import com.evio.notes.ui.theme.LightOnSurface
+import com.evio.notes.ui.theme.LightPrimary
+import com.evio.notes.ui.theme.LightSurface
+import com.evio.notes.ui.theme.RedError
 
-val InterFontFamily = FontFamily(
-    Font(R.font.inter_28pt_regular, FontWeight.Normal),
-    Font(R.font.inter_28pt_medium, FontWeight.Medium),
-    Font(R.font.inter_28pt_semibold, FontWeight.SemiBold),
-    Font(R.font.inter_28pt_bold, FontWeight.Bold)
+private val LightColors = lightColorScheme(
+    primary = LightPrimary,
+    onPrimary = LightOnPrimary,
+    background = LightBackground,
+    onBackground = LightOnBackground,
+    surface = LightSurface,
+    onSurface = LightOnSurface,
+    error = RedError
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = LightColors.Primary,
-    onPrimary = LightColors.OnPrimary,
-    background = LightColors.Background,
-    onBackground = LightColors.OnBackground,
-    surface = LightColors.Surface,
-    onSurface = LightColors.OnSurface,
-    outline = LightColors.Outline
+private val DarkColors = darkColorScheme(
+    primary = DarkPrimary,
+    onPrimary = DarkOnPrimary,
+    background = DarkBackground,
+    onBackground = DarkOnBackground,
+    surface = DarkSurface,
+    onSurface = DarkOnSurface,
+    error = RedError
 )
-
-private val DarkColorScheme = darkColorScheme(
-    primary = DarkColors.Primary,
-    onPrimary = DarkColors.OnPrimary,
-    background = DarkColors.Background,
-    onBackground = DarkColors.OnBackground,
-    surface = DarkColors.Surface,
-    onSurface = DarkColors.OnSurface,
-    outline = DarkColors.Outline
-)
-
-
 
 @Composable
 fun EvioNotesTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if(darkTheme) DarkColorScheme else LightColorScheme
+    val colors = if (darkTheme) DarkColors else LightColors
 
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = EvioTypography,
-        shapes = EvioShapes,
+        colorScheme = colors,
+        typography = AppTypography,
+        shapes = AppShapes,
         content = content
     )
 }
