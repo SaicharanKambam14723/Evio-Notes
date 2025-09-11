@@ -2,10 +2,15 @@
 # Core
 agp = "8.6.1"
 kotlin = "2.0.21"
+kotlinxCoroutinesTest = "1.9.0"
+kotlinxCoroutinesTestVersion = "1.7.3"
 ksp = "2.0.21-1.0.27"
 coreKtx = "1.15.0"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
+mockitoCore = "5.5.0"
+mockitoKotlin = "5.1.0"
+mockk = "1.13.8"
 navigationCompose = "2.8.3"
 composeBom = "2024.09.02"
 
@@ -27,6 +32,8 @@ room = "2.6.1"
 datastorePreferences = "1.1.1"
 
 # Work / Paging
+uiTestJunit4 = "1.7.0"
+uiTestManifest = "1.7.0"
 workRuntimeKtx = "2.9.1"
 pagingRuntimeKtx = "3.3.2"
 
@@ -48,8 +55,13 @@ espressoCore = "3.6.1"
 [libraries]
 # AndroidX
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+kotlinx-coroutines-test-v173 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTestVersion" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 
@@ -80,6 +92,8 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 
 # Work / Paging
+ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestManifest" }
 work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
 paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
 

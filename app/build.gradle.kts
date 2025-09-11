@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.evio.notes"
+    namespace = "com.example.evionotes"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.evio.notes"
+        applicationId = "com.example.evionotes"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -107,9 +107,14 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.junit.ext)
     androidTestImplementation(libs.espresso.core)
-    // Test rules and transitive dependencies:
-    val compose_version = "1.7.0"
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
+    androidTestImplementation(libs.ui.test.junit4)
 // Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
+    debugImplementation(libs.ui.test.manifest)
+    testImplementation(libs.mockito.core)
+
+// Mockito Kotlin extensions
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.kotlinx.coroutines.test.v173)
+    testImplementation(libs.mockk)
 }
