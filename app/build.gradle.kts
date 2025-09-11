@@ -69,10 +69,6 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
 
-    // Accompanist
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.accompanist.permissions)
-
     // Async / Serialization
     implementation(libs.coroutines.android)
     implementation(libs.serialization.json)

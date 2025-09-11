@@ -13,10 +13,6 @@ composeBom = "2024.09.02"
 hiltAndroid = "2.52"
 hiltNavigationCompose = "1.2.0"
 
-# Accompanist
-accompanistSystemuicontroller = "0.34.0"
-accompanistPermissions = "0.34.0"
-
 # Async / Serialization
 kotlinxCoroutinesAndroid = "1.8.1"
 kotlinxSerializationJson = "1.7.1"
@@ -65,10 +61,6 @@ compose-material3 = { module = "androidx.compose.material3:material3" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
-
-# Accompanist
-accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
-accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 
 # Async / Serialization
 coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }

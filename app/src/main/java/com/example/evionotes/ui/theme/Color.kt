@@ -2,31 +2,22 @@ package com.example.evionotes.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val BluePrimary = Color(0xFF42A5F5) // Medium Blue
-val BlueSecondary = Color(0xFF90CAF9) // Light Sky Blue
-val BlueTertiary = Color(0xFF0D47A1) // Deep Navy
 
-// Neutrals
-val GrayLight = Color(0xFFF5F5F5)
-val GrayDark = Color(0xFF212121)
-val White = Color(0xFFFFFFFF)
-val Black = Color(0xFF000000)
+val BlueLight = Color(0xFF4DA6FF)       // Light blue for primary
+val BlueDarkVariant = Color(0xFF005BB5) // Darker blue for accents
+val BlueMedium = Color(0xFF1A75FF)     // Medium blue for primaryVariant
 
-// Error
-val RedError = Color(0xFFB00020)
+val LightBackground = Color(0xFFFFFFFF)  // White background
+val LightSurface = Color(0xFFF5F5F5)     // Light gray for surfaces
+val LightOnPrimary = Color(0xFFFFFFFF)   // Text/icons on primary color
+val LightOnBackground = Color(0xFF000000)// Text/icons on background
 
-// Light Theme
-val LightPrimary = BluePrimary
-val LightOnPrimary = White
-val LightBackground = White
-val LightOnBackground = Black
-val LightSurface = GrayLight
-val LightOnSurface = Black
+// Dark mode colors inspired by logo blues with darker shades
+val DarkPrimary = Color(0xFF1A75FF)       // Medium blue
+val DarkPrimaryVariant = Color(0xFF004180)// Darker blue shade
+val DarkSecondary = Color(0xFF82B1FF)     // Lighter accent blue
 
-// Dark Theme
-val DarkPrimary = BlueTertiary
-val DarkOnPrimary = White
-val DarkBackground = GrayDark
-val DarkOnBackground = White
-val DarkSurface = Color(0xFF2C2C2C)
-val DarkOnSurface = White
+val DarkBackground = Color(0xFF121212)    // Typical dark theme background
+val DarkSurface = Color(0xFF1E1E1E)       // Dark grey surfaces
+val DarkOnPrimary = Color(0xFF000000)     // Text/icons on primary
+val DarkOnBackground = Color(0xFFFFFFFF)  // Text/icons on background

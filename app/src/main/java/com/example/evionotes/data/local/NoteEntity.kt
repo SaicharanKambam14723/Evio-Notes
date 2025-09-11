@@ -14,7 +14,7 @@ data class NoteEntity (
     @ColumnInfo(name = "content")
     val content: String,
     @ColumnInfo(name = "timestamp")
-    val timestamp: Long = System.currentTimeMillis(),
+    val timestamp: Long,
     @ColumnInfo(name = "user_id")
     val userId: Int
 )
