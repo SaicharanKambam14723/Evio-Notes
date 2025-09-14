@@ -9,7 +9,7 @@ import javax.inject.Inject
 class SearchNotesUseCase  @Inject constructor(
     private val noteRepository: NoteRepository
 ) {
-    operator fun invoke(query: String, userId: Int): Flow<List<NoteEntity>> {
+    operator fun invoke(query: String, userId: String): Flow<List<NoteEntity>> {
         return noteRepository.getNotesForUser(userId)
             .map { notes->
                 notes.filter { note->

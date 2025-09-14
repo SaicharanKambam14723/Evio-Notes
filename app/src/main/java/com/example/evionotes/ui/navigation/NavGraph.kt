@@ -8,17 +8,17 @@ import androidx.navigation.compose.composable
 
 @Composable
 fun NavGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Routes.HOME) {
-        composable(Routes.HOME) {
+    NavHost(navController = navController, startDestination = NavRoutes.HOME) {
+        composable(NavRoutes.HOME) {
 
         }
-        composable(Routes.NOTE_EDITOR) {
+        composable(NavRoutes.NOTE_EDITOR) {
 
         }
-        composable(Routes.NOTE_DETAIL) {
+        composable(NavRoutes.NOTE_DETAIL) {
 
         }
-        composable(Routes.SETTINGS) {
+        composable(NavRoutes.SETTINGS) {
 
         }
     }

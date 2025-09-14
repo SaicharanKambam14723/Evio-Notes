@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import com.example.evionotes.ui.navigation.AppNavHost
 import com.example.evionotes.ui.theme.EvioNotesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -14,7 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EvioNotesTheme {
-                EvioNotesApp()
+                AppNavHost()
             }
         }
     }
