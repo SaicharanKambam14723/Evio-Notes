@@ -55,7 +55,7 @@ fun NoteCard(
                 .background(MaterialTheme.colorScheme.surfaceVariant)
                 .padding(14.dp)
         ) {
-            if(note.imageUrls.isNotEmpty()) {
+            if(note.imageUrls?.isNotEmpty() == true) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

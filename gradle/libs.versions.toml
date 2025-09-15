@@ -6,6 +6,7 @@ kotlinxCoroutinesTest = "1.9.0"
 kotlinxCoroutinesTestVersion = "1.7.3"
 ksp = "2.0.21-1.0.27"
 coreKtx = "1.15.0"
+leakcanaryAndroid = "2.14"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
 mockitoCore = "5.5.0"
@@ -45,7 +46,6 @@ retrofitKotlinxSerialization = "1.0.0"
 multiplatformMarkdownRenderer = "0.15.0"
 
 # Debug
-leakcanary = "2.14"
 
 # Test
 junit = "4.13.2"
@@ -92,6 +92,7 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 
 # Work / Paging
+squareup-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
 ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestManifest" }
 work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
@@ -106,9 +107,6 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose"
 
 # Markdown
 multiplatform-markdown-renderer = { module = "com.mikepenz:multiplatform-markdown-renderer", version.ref = "multiplatformMarkdownRenderer" }
-
-# Debug
-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 
 # Test
 junit = { module = "junit:junit", version.ref = "junit" }

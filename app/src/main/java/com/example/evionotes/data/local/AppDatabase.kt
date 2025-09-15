@@ -2,7 +2,9 @@ package com.example.evionotes.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
+@TypeConverters(Converters::class)
 @Database(
     entities = [UserEntity::class, NoteEntity::class],
     version = 1,

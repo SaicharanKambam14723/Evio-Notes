@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 sealed class UiEvent {
     data class NavigateToNote(val noteId: Int) : UiEvent()
     object NavigateToAddNote : UiEvent()
@@ -34,6 +33,9 @@ class NotesViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
     private val _userId = MutableStateFlow(1)
 
     private val _events = Channel<UiEvent>(Channel.BUFFERED)
@@ -42,10 +44,10 @@ class NotesViewModel @Inject constructor(
     val notes = combine(_userId, _searchQuery) { userId, query ->
         userId to query
     }.flatMapLatest { (userId, query) ->
-        if(query.isBlank()) {
+        if (query.isBlank()) {
             getNotesUseCase(userId)
         } else {
-            searchNotesUseCase(userId.toString(), query)
+            searchNotesUseCase(query, userId)  // Corrected parameter order here
         }
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
@@ -64,5 +66,4 @@ class NotesViewModel @Inject constructor(
     fun onViewImages(images: List<Int>) = viewModelScope.launch {
         _events.send(UiEvent.ShowImageGallery(images))
     }
-
 }

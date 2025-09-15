@@ -16,7 +16,11 @@ class NoteRepository @Inject constructor(
     suspend fun upsertNote(note: NoteEntity) {
         val encryptedContent = cryptoManager.encrypt(note.content)
         val encryptedNote = note.copy(content = encryptedContent)
-        noteDao.insertNote(encryptedNote)
+        if (note.id == 0) {
+            noteDao.insertNote(encryptedNote)
+        } else {
+            noteDao.updateNote(encryptedNote)
+        }
     }
 
     fun getNotesForUser(userId: Int): Flow<List<NoteEntity>> =
@@ -33,10 +37,5 @@ class NoteRepository @Inject constructor(
 
     suspend fun deleteNote(note: NoteEntity) {
         noteDao.deleteNote(note)
-    }
-
-    suspend fun updateNote(note: NoteEntity) {
-        val encryptedNote = note.copy(content = cryptoManager.encrypt(note.content))
-        noteDao.updateNote(encryptedNote)
     }
 }

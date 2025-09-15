@@ -100,8 +100,7 @@ dependencies {
     // Markdown
     implementation(libs.multiplatform.markdown.renderer)
 
-    // Debug
-    debugImplementation(libs.leakcanary.android)
+
 
     // Tests
     testImplementation(libs.junit)
@@ -117,4 +116,8 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.kotlinx.coroutines.test.v173)
     testImplementation(libs.mockk)
+
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14") {
+        exclude(group = "com.squareup.leakcanary", module = "leakcanary-android-process")
+    }
 }

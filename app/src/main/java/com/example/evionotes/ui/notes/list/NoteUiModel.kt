@@ -1,5 +1,7 @@
 package com.example.evionotes.ui.notes.list
 
+import com.example.evionotes.data.local.ChecklistItem
+
 enum class NoteType {
     Regular,
     Checklist,
@@ -17,7 +19,8 @@ data class NoteUiModel(
     val title: String? = null,
     val content: String? = null,
     val type: NoteType = NoteType.Regular,
-    val checklistItems: List<Pair<String, Boolean>>?=null,
-    val imageUrls: List<Int> = emptyList(),
-    val timestamp: Long? = null
+    val checklistItems: List<ChecklistItem>?,
+    val imageUrls: List<Int>?,
+    val timestamp: Long? = null,
+    val userId: Int
 )

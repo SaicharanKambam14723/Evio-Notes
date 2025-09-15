@@ -38,7 +38,7 @@ import com.example.evionotes.data.local.NoteEntity
 
 @Composable
 fun NotesHomeScreen(
-    notesList: List<NoteEntity>,
+    notesList: List<NoteUiModel>,
     onNoteClick: (NoteUiModel) -> Unit,
     onViewImages: (List<Int>) -> Unit,
     onAddNote: () -> Unit,
@@ -62,7 +62,7 @@ fun NotesHomeScreen(
         },
         topBar = {
             Row(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
                     .padding(horizontal = 18.dp, vertical = 18.dp),

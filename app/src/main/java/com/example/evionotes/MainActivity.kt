@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import com.example.evionotes.ui.navigation.AppNavHost
 import com.example.evionotes.ui.theme.EvioNotesTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,9 +16,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            EvioNotesTheme {
-                AppNavHost()
-            }
+            val isDarkTheme = remember { mutableStateOf(false) }
+            AppNavHost(
+                isDarkTheme = isDarkTheme.value,
+                onToggleDarkTheme = { isDarkTheme.value = it }
+            )
+
         }
     }
 }
