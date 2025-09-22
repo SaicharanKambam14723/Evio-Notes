@@ -1,87 +1,92 @@
 package com.example.evionotes.ui.splash
 
-import android.annotation.SuppressLint
 import android.view.animation.OvershootInterpolator
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.evionotes.R
+import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(onTimeout: () -> Unit) {
-    val scale = remember { Animatable(0.7f) }
-    val alpha = remember { Animatable(0f) }
-    val textOffset = remember { Animatable(40f) }
-    val bgColor by animateColorAsState(
-        targetValue = if(alpha.value > 0.5f) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background,
-        animationSpec = tween(durationMillis = 800)
-    )
+    // Animatables
+    val logoScale = remember { Animatable(2.0f) } // Start zoomed in
+    val logoAlpha = remember { Animatable(0f) }
+    val logoRotation = remember { Animatable(0f) }
+    val glowAlpha = remember { Animatable(0f) }
 
     LaunchedEffect(Unit) {
-        scale.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = 700, easing = {
-                OvershootInterpolator(3f).getInterpolation(it)
-            })
-        )
-        alpha.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(durationMillis = 700)
-        )
-        textOffset.animateTo(
-            targetValue = 0f,
-            animationSpec = tween(durationMillis = 700, delayMillis = 250)
+        // Fade in
+        logoAlpha.animateTo(targetValue = 1f, animationSpec = tween(800))
+
+        // Zoom out with overshoot
+        logoScale.animateTo(
+            targetValue = 1.1f,
+            animationSpec = tween(800, easing = { OvershootInterpolator(6f).getInterpolation(it) })
         )
 
-        kotlinx.coroutines.delay(1200)
-        onTimeout()
-    }
+        // Rotation animation
+        logoRotation.animateTo(15f, tween(600))
+        logoRotation.animateTo(0f, tween(600, easing = FastOutSlowInEasing))
 
-    Box(
-        modifier = Modifier
-            .background(bgColor)
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .scale(scale.value)
-                    .size(140.dp)
-                    .alpha(alpha.value)
+        // Subtle pulse (finite)
+        repeat(2) {
+            logoScale.animateTo(
+                targetValue = 1.05f,
+                animationSpec = tween(400, easing = LinearEasing)
             )
-            Spacer(modifier = Modifier.size(24.dp))
-            Text(
-                text = R.string.app_name.toString(),
-                style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier
-                    .alpha(alpha.value)
-                    .offset(y = textOffset.value.dp)
+            logoScale.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(400, easing = LinearEasing)
             )
         }
+
+        // Last glow pulse at the end
+        glowAlpha.animateTo(0.5f, tween(500))
+        glowAlpha.animateTo(0f, tween(500))
+
+        delay(1000) // wait before navigating
+        onTimeout()  // navigate to next screen
+    }
+
+    // Main layout
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        // Glow behind logo
+        Surface(
+            modifier = Modifier
+                .size(180.dp)
+                .alpha(glowAlpha.value),
+            shape = CircleShape,
+            color = Color(0xFF5CB9EC).copy(alpha = 0.3f)
+        ) {}
+
+        // Logo with all combined animations
+        Image(
+            painter = painterResource(id = R.drawable.logo_nobg),
+            contentDescription = "App Logo",
+            modifier = Modifier
+                .scale(logoScale.value)
+                .rotate(logoRotation.value)
+                .size(160.dp)
+                .alpha(logoAlpha.value)
+        )
     }
 }

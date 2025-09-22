@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,6 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -31,6 +34,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.example.evionotes.ui.theme.BlueBrand
+import com.example.evionotes.ui.theme.BrandWhite
+import com.example.evionotes.ui.theme.FreshCoral
+import com.example.evionotes.ui.theme.SoftPurple
 import com.mikepenz.markdown.compose.elements.MarkdownText
 import java.time.Instant
 import java.time.ZoneId
@@ -48,61 +55,65 @@ fun NoteCard(
         shape = RoundedCornerShape(18.dp),
         modifier = modifier
             .fillMaxWidth()
-            .wrapContentHeight()
+            .shadow(10.dp, RoundedCornerShape(20.dp)),
+        colors = CardDefaults.cardColors(
+            containerColor = BrandWhite
+        )
     ) {
         Column(
             modifier = modifier
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(14.dp)
-        ) {
-            if(note.imageUrls?.isNotEmpty() == true) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(120.dp)
-                        .padding(bottom = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    note.imageUrls.take(3).forEach { imgRes ->
-                        Image(
-                            painter = painterResource(id = imgRes),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(1f)
-                                .clip(RoundedCornerShape(12.dp))
+                .background(
+                    brush = Brush.verticalGradient(
+                        listOf(
+                            BlueBrand.copy(0.13f),
+                            SoftPurple.copy(0.10f)
                         )
-                    }
-                    if(note.imageUrls.size > 3) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(1f)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(MaterialTheme.colorScheme.primaryContainer)
-                                .clickable {
-                                    onViewImages(note.imageUrls)
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "+${note.imageUrls.size - 3}",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                textAlign = TextAlign.Center
+                    )
+                )
+                .padding(16.dp)
+        ) {
+            note.imageUrls?.let { urls ->
+                if(urls.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(90.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        urls.take(3).forEach {  imgRes ->
+                            Image(
+                                painter = painterResource(id = imgRes),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight()
+                                    .clip(RoundedCornerShape(10.dp))
                             )
                         }
+                        if(urls.size > 3) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .weight(1f)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(FreshCoral)
+                                    .clickable(
+                                        onClick = { onViewImages(urls) }
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "+${urls.size - 3}",
+                                    color = BrandWhite,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
-            note.title?.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 6.dp)
-                )
-            }
+            
             when(note.type) {
                 NoteType.Checklist -> {
                     note.checklistItems?.forEach {

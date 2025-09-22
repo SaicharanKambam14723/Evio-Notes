@@ -33,6 +33,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -44,8 +45,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.evionotes.data.local.ChecklistItem
@@ -58,6 +60,10 @@ fun NoteDetailScreen(
     viewModel: NoteDetailViewModel = hiltViewModel(),
 ) {
     val noteState by viewModel.note.collectAsState()
+
+    var title by remember(noteState?.id) { mutableStateOf(noteState?.title ?: "") }
+    var content by remember(noteState?.id) { mutableStateOf(noteState?.content ?: "") }
+
     val isLoading by viewModel.isLoading.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -71,6 +77,8 @@ fun NoteDetailScreen(
                 title = {
                     Text(
                         text = "Note Detail",
+                        color = Color(0xFF193872),
+                        style = MaterialTheme.typography.titleLarge
                     )
                 },
                 navigationIcon = {
@@ -79,22 +87,28 @@ fun NoteDetailScreen(
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
+                            tint = Color(0xFF193872)
                         )
                     }
                 },
                 actions = {
                     TextButton(
                         onClick = {
+                            viewModel.updateTitle(title)
+                            viewModel.updateContent(content)
                             viewModel.saveNote()
                         }
                     ) {
                         Text(
                             text = "Save",
-                            color = MaterialTheme.colorScheme.primary
+                            color = Color(0xFF5CB9EC)
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.White
+                )
             )
         },
         snackbarHost = {
@@ -118,15 +132,27 @@ fun NoteDetailScreen(
                     .fillMaxSize()
                     .verticalScroll(scrollState)
                     .padding(padding)
-                    .padding(16.dp)
-                    .background(MaterialTheme.colorScheme.background)
+                    .padding(20.dp)
+                    .background(
+                        brush = Brush
+                            .verticalGradient(
+                                colors = listOf(
+                                    Color.White,
+                                    Color(0xFF5CB9EC).copy(alpha = 0.09f)
+                                )
+                            )
+                    )
             ) {
-                val title by remember { mutableStateOf(note.title?:"") }
                 TextField(
                     value = title,
-                    onValueChange = { viewModel.updateTitle(it) },
-                    label = { Text("Title") },
-                    modifier = Modifier.fillMaxWidth()
+                    onValueChange = {
+                        title = it
+                    },
+                    label = { Text("Title", color = Color(0xFF193872)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = when(note.type) {
+                        NoteType.Regular -> 2
+                    }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 when {
@@ -199,14 +225,10 @@ fun NoteDetailScreen(
                         }
                     }
                     else -> {
-                        var content by remember {
-                            mutableStateOf(note.content ?: "")
-                        }
                         TextField(
                             value = content,
                             onValueChange = {
                                 content = it
-                                viewModel.updateContent(it)
                             },
                             label = {
                                 Text("Content")
@@ -216,15 +238,9 @@ fun NoteDetailScreen(
                                 .heightIn(150.dp),
                             maxLines = Int.MAX_VALUE
                         )
-                        DisposableEffect(content) {
-                            onDispose {
-                                viewModel.updateContent(content)
-                            }
-                        }
                     }
                 }
             }
         }
     }
-
 }

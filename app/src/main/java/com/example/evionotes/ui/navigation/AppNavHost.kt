@@ -39,7 +39,7 @@ fun AppNavHost(
         }
     }
 
-    NavHost(navController = navController, startDestination = NavRoutes.Splash) {
+    NavHost(navController = navController, startDestination = NavRoutes.HOME) {
         composable(NavRoutes.Splash) {
             SplashScreen(
                 onTimeout = {
