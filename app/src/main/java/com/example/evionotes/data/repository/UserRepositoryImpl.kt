@@ -6,16 +6,10 @@ import com.example.evionotes.domain.model.User
 import com.example.evionotes.domain.repository.UserRepository
 import com.example.evionotes.util.CryptoUtil
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 import javax.inject.Inject
-
-sealed class AuthError : Exception() {
-    object UserAlreadyExists : AuthError()
-    object UsernameAlreadyExists : AuthError()
-    object UserNotFound : AuthError()
-    object InvalidPassword : AuthError()
-}
 
 class UserRepositoryImpl @Inject constructor(
     private val userDAO: UserDAO,
@@ -28,6 +22,7 @@ class UserRepositoryImpl @Inject constructor(
         password: String
     ): Result<User> {
         return try {
+            // Check for existing email or username
             if (userDAO.getUserByEmail(email) != null) {
                 return Result.failure(AuthError.UserAlreadyExists)
             }
@@ -48,9 +43,10 @@ class UserRepositoryImpl @Inject constructor(
                 passwordHash = passwordHash,
                 salt = salt,
                 createdAt = createdAt,
-                isLoggedIn = true
+                isLoggedIn = true  // Mark as logged in immediately
             )
 
+            // Log out any previous users before inserting
             userDAO.logoutAllUsers()
             userDAO.insertUser(userEntity)
 
@@ -95,7 +91,16 @@ class UserRepositoryImpl @Inject constructor(
 
     override fun getLoggedInUser(): Flow<User?> {
         return userDAO.getLoggedInUserFlow().map { entity ->
-            entity?.toDomain()
+            entity?.let {
+                User(
+                    id = it.id,
+                    username = it.username,
+                    email = it.email,
+                    createdAt = it.createdAt
+                )
+            }
+        }.distinctUntilChanged() { old, new ->
+            old?.id == new?.id
         }
     }
 
@@ -104,7 +109,7 @@ class UserRepositoryImpl @Inject constructor(
     }
 }
 
-// Extension function for mapping
+// Extension function to map from UserEntity to domain User model
 private fun UserEntity.toDomain(): User {
     return User(
         id = id,
@@ -112,4 +117,12 @@ private fun UserEntity.toDomain(): User {
         email = email,
         createdAt = createdAt
     )
+}
+
+// Exception types for authentication errors
+sealed class AuthError : Exception() {
+    object UserAlreadyExists : AuthError()
+    object UsernameAlreadyExists : AuthError()
+    object UserNotFound : AuthError()
+    object InvalidPassword : AuthError()
 }

@@ -71,25 +71,18 @@ fun RegisterScreen(
 
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
-    val currentUser by viewModel.currentUser.collectAsState()
 
-    LaunchedEffect(currentUser) {
-        if(currentUser != null) {
-            onNavigateToHome()
-        }
-    }
 
-    error?.let { errorMessage ->
-        LaunchedEffect(errorMessage) {
+    // Auto-clear error after 3 seconds
+    LaunchedEffect(error) {
+        if (error != null) {
+            kotlinx.coroutines.delay(3000)
             viewModel.clearError()
         }
     }
 
     val passwordsMatch = password == confirmPassword
-    val canRegister = username.isNotBlank() &&
-            email.isNotBlank() &&
-            password.isNotBlank() &&
-            passwordsMatch
+    val canRegister = username.isNotBlank() && email.isNotBlank() && password.isNotBlank() && passwordsMatch
 
     Box(
         modifier = Modifier
@@ -102,7 +95,6 @@ fun RegisterScreen(
                     )
                 )
             )
-
     ) {
         Column(
             modifier = Modifier
@@ -111,139 +103,90 @@ fun RegisterScreen(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(
-                modifier = Modifier.height(60.dp)
-            )
+            Spacer(modifier = Modifier.height(60.dp))
 
+            // App Logo Card
             Card(
-                modifier = Modifier
-                    .size(120.dp),
+                modifier = Modifier.size(120.dp),
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = PrimaryBlue
-                )
+                colors = CardDefaults.cardColors(containerColor = PrimaryBlue)
             ) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                    Column(horizontalAlignment = Alignment.Start, verticalArrangement = Arrangement.Center) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Image(
                                 painter = painterResource(id = R.drawable.logo_nobg),
                                 contentDescription = "Logo",
                                 modifier = Modifier.size(45.dp)
                             )
-
                             Spacer(modifier = Modifier.width(8.dp))
-
                             Text(
                                 text = "Evio Notes",
                                 style = MaterialTheme.typography.displayMedium,
-                                fontWeight = FontWeight.Bold,
                                 color = SecondaryBlue
                             )
                         }
-
                         Text(
                             text = "Secure • Private • Beautiful",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 }
             }
 
-            Spacer(
-                modifier = Modifier.height(32.dp)
-            )
+            Spacer(modifier = Modifier.height(32.dp))
 
+            // Registration Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 8.dp
-                )
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(24.dp),
+                    modifier = Modifier.padding(24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = "Create Account",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
+                        style = MaterialTheme.typography.headlineSmall
                     )
 
-                    Spacer(
-                        modifier = Modifier.height(24.dp)
-                    )
+                    Spacer(modifier = Modifier.height(24.dp))
 
+                    // Username
                     OutlinedTextField(
                         value = username,
-                        onValueChange = {
-                            username = it
-                        },
-                        label = {
-                            Text("Username")
-                        },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Person,
-                                contentDescription = "Username"
-                            )
-                        },
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.fillMaxWidth()
+                        onValueChange = { username = it },
+                        label = { Text("Username") },
+                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = "Username") },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
+                    // Email
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
                         label = { Text("Email") },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Email,
-                                contentDescription = "Email"
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.fillMaxWidth()
+                        leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
                     )
 
-                    Spacer(
-                        modifier = Modifier.height(16.dp)
-                    )
+                    Spacer(modifier = Modifier.height(16.dp))
 
+                    // Password
                     OutlinedTextField(
                         value = password,
-                        onValueChange = {
-                            password = it
-                        },
-                        label = {
-                            Text(
-                                text = "Password"
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = "Password"
-                            )
-                        },
+                        onValueChange = { password = it },
+                        label = { Text("Password") },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password") },
                         trailingIcon = {
                             IconButton(
                                 onClick = {
@@ -251,132 +194,75 @@ fun RegisterScreen(
                                 }
                             ) {
                                 Icon(
-                                    if(isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                                    contentDescription = if (isPasswordVisible) "Hide Password" else "Show Password"
+                                    if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    contentDescription = "Toggle password"
                                 )
                             }
                         },
                         visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password
-                        ),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
-                        supportingText = if(password.isNotEmpty() && password.length < 6) {
-                            {
-                                Text(
-                                    text = "Password must be at least 6 characters"
-                                )
-                            }
-                        } else null,
-                        isError = password.isNotEmpty() && password.length < 6,
-                        modifier = Modifier.fillMaxWidth()
+                        isError = password.isNotEmpty() && password.length < 6
                     )
 
-                    Spacer(
-                        modifier = Modifier.height(16.dp)
-                    )
+                    Spacer(modifier = Modifier.height(16.dp))
 
+                    // Confirm Password
                     OutlinedTextField(
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
                         label = { Text("Confirm Password") },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Lock,
-                                contentDescription = "Confirm Password"
-                            )
-                        },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Confirm Password") },
                         trailingIcon = {
                             IconButton(
-                                onClick = { isConfirmPasswordVisible = !isConfirmPasswordVisible }
+                                onClick = {
+                                    isConfirmPasswordVisible = !isConfirmPasswordVisible
+                                }
                             ) {
                                 Icon(
-                                    if (isConfirmPasswordVisible) Icons.Default.VisibilityOff
-                                    else Icons.Default.Visibility,
-                                    contentDescription = if (isConfirmPasswordVisible) "Hide password"
-                                    else "Show password"
+                                    if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    contentDescription = "Toggle password"
                                 )
                             }
                         },
-                        visualTransformation = if (isConfirmPasswordVisible) VisualTransformation.None
-                        else PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password
-                        ),
+                        visualTransformation = if (isConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(12.dp),
-                        supportingText = if (confirmPassword.isNotEmpty() && !passwordsMatch) {
-                            { Text("Passwords don't match") }
-                        } else null,
                         isError = confirmPassword.isNotEmpty() && !passwordsMatch
                     )
 
-                    Spacer(
-                        modifier = Modifier.height(24.dp)
-                    )
+                    Spacer(modifier = Modifier.height(24.dp))
 
+                    // Register Button
                     Button(
-                        onClick = {
-                            viewModel.register(username, email, password)
-                        },
+                        onClick = { viewModel.register(username, email, password) },
                         enabled = !isLoading && canRegister,
                         shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
+                        modifier = Modifier.fillMaxWidth().height(56.dp)
                     ) {
-                        if(isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
+                        if (isLoading) {
+                            CircularProgressIndicator(modifier = Modifier.size(20.dp))
                         } else {
-                            Text(
-                                text = "Create Account",
-                                style = MaterialTheme.typography.titleMedium,
-                            )
+                            Text("Create Account")
                         }
                     }
 
-                    Spacer(
-                        modifier = Modifier.height(16.dp)
-                    )
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Already have an account?",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-
-                        TextButton(
-                            onClick = onNavigateToLogin
-                        ) {
-                            Text(
-                                text = "Log In",
-                                style = MaterialTheme.typography.titleSmall,
-                                color = PrimaryBlue
-                            )
-                        }
+                    // Navigate to Login
+                    Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                        Text("Already have an account?")
+                        TextButton(onClick = onNavigateToLogin) { Text("Log In") }
                     }
                 }
             }
 
-            Spacer(
-                modifier = Modifier.height(24.dp)
-            )
-
-            Text(
-                text = "\uD83D\uDD10 End-to-End Encryption • ✨ Beautiful Interface • \uD83D\uDE80 Lightning Fast",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
+            Spacer(modifier = Modifier.height(24.dp))
         }
 
+        // Show error
         error?.let { errorMessage ->
             Box(
                 modifier = Modifier
@@ -384,18 +270,8 @@ fun RegisterScreen(
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
             ) {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.error
-                    ),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text(
-                        text = errorMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onError,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.error)) {
+                    Text(errorMessage, modifier = Modifier.padding(16.dp))
                 }
             }
         }

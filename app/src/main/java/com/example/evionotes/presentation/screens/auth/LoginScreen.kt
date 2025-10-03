@@ -55,6 +55,7 @@ import com.example.evionotes.presentation.theme.PrimaryBlue
 import com.example.evionotes.presentation.theme.SecondaryBlue
 import com.example.evionotes.presentation.viewmodel.AuthViewModel
 
+
 @Composable
 fun LoginScreen(
     onNavigateToRegister: () -> Unit,
@@ -67,16 +68,11 @@ fun LoginScreen(
 
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
-    val currentUser by viewModel.currentUser.collectAsState()
 
-    LaunchedEffect(currentUser) {
-        if(currentUser != null) {
-            onNavigateToHome()
-        }
-    }
-
-    error.let { errorMessage ->
-        LaunchedEffect(errorMessage) {
+    // Auto-clear error after 3 seconds
+    LaunchedEffect(error) {
+        if (error != null) {
+            kotlinx.coroutines.delay(3000)
             viewModel.clearError()
         }
     }
@@ -100,198 +96,61 @@ fun LoginScreen(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(
-                modifier = Modifier.height(80.dp)
+            Spacer(modifier = Modifier.height(80.dp))
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                leadingIcon = { Icon(Icons.Default.Email, contentDescription = "Email") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Card(
-                modifier = Modifier
-                    .size(120.dp),
-                shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = PrimaryBlue
-                )
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.logo_nobg),
-                                contentDescription = "Logo",
-                                modifier = Modifier.size(45.dp)
-                            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            Text(
-                                text = "Evio Notes",
-                                style = MaterialTheme.typography.displayMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = SecondaryBlue
-                            )
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password") },
+                leadingIcon = { Icon(Icons.Default.Lock, contentDescription = "Password") },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            isPasswordVisible = !isPasswordVisible
                         }
-
-                        Text(
-                            text = "Secure • Private • Beautiful",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center
+                    ) {
+                        Icon(
+                            if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            contentDescription = "Toggle password"
                         )
                     }
-                }
+                },
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = { viewModel.login(email, password) },
+                enabled = !isLoading && email.isNotBlank() && password.isNotBlank(),
+                modifier = Modifier.fillMaxWidth().height(56.dp)
+            ) {
+                if (isLoading) CircularProgressIndicator(modifier = Modifier.size(20.dp))
+                else Text("Log In")
             }
 
-            Spacer(
-                modifier = Modifier.height(48.dp)
-            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                elevation = CardDefaults.cardElevation(
-                    defaultElevation = 8.dp
-                )
-            ) {
-                Column(
-                    modifier = Modifier.padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "Welcome Back",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-
-                    Spacer(
-                        modifier = Modifier.height(24.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = {
-                            email = it
-                        },
-                        label = {
-                            Text(
-                                text = "Email"
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Email,
-                                contentDescription = "Email Icon"
-                            )
-                        },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(
-                        modifier = Modifier.height(16.dp)
-                    )
-
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = {
-                            password = it
-                        },
-                        label = {
-                            Text(
-                                text = "Password"
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = "Password Icon"
-                            )
-                        },
-                        trailingIcon = {
-                            IconButton(
-                                onClick = {
-                                    isPasswordVisible = !isPasswordVisible
-                                }
-                            ) {
-                                Icon(
-                                    if(isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                                    contentDescription = if(isPasswordVisible) "Hide Password" else "Show Password"
-                                )
-                            }
-                        },
-                        visualTransformation = if(isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Password
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(
-                        modifier = Modifier.height(24.dp)
-                    )
-
-                    Button(
-                        onClick = {
-                            viewModel.login(email, password)
-                        },
-                        enabled = !isLoading && email.isNotBlank() && password.isNotBlank(),
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                    ) {
-                        if(isLoading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(20.dp),
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        } else {
-                            Text(
-                                text = "Log In",
-                                style = MaterialTheme.typography.titleMedium,
-                            )
-                        }
-                    }
-
-                    Spacer(
-                        modifier = Modifier.height(16.dp)
-                    )
-
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Don't have an account?",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        TextButton(
-                            onClick = onNavigateToRegister
-                        ) {
-                            Text(
-                                text = "Sign Up",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
-                }
+            Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                Text("Don't have an account?")
+                TextButton(onClick = onNavigateToRegister) { Text("Sign Up") }
             }
         }
 
+        // Show error
         error?.let { errorMessage ->
             Box(
                 modifier = Modifier
@@ -299,18 +158,8 @@ fun LoginScreen(
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
             ) {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.error
-                    ),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text(
-                        text = errorMessage,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onError,
-                        modifier = Modifier.padding(16.dp)
-                    )
+                Card(shape = RoundedCornerShape(12.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.error)) {
+                    Text(errorMessage, modifier = Modifier.padding(16.dp))
                 }
             }
         }

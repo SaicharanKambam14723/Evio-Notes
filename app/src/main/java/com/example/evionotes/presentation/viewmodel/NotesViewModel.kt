@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,8 +33,18 @@ class NotesViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    private val _currentUser = MutableStateFlow<User?>(null)
-    val currentUser: StateFlow<User?> = _currentUser.asStateFlow()
+    private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
+    val authState: StateFlow<AuthState> = _authState.asStateFlow()
+
+    val currentUser: StateFlow<User?> = authState
+        .map { state ->
+            if (state is AuthState.LoggedIn) state.user else null
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
 
     val notes: StateFlow<PagingData<Note>> = currentUser
         .filterNotNull()
@@ -66,16 +77,22 @@ class NotesViewModel @Inject constructor(
         )
 
     init {
-        observeCurrentUser()
+        fetchCurrentUser()
     }
 
-    private fun observeCurrentUser() {
+    private fun fetchCurrentUser() {
         viewModelScope.launch {
+            _authState.value = AuthState.Loading
             userRepository.getLoggedInUser().collect { user ->
-                _currentUser.value = user
+                if (user != null) {
+                    _authState.value = AuthState.LoggedIn(user)
+                } else {
+                    _authState.value = AuthState.LoggedOut
+                }
             }
         }
     }
+
 
     fun searchNotes(query: String) {
         _searchQuery.value = query
@@ -92,7 +109,10 @@ class NotesViewModel @Inject constructor(
                 .onFailure {  exception ->
                     _error.value = exception.message
                 }
+
+            _isLoading.value = false
         }
+
     }
 
     fun togglePinNote(noteId: String) {
@@ -117,3 +137,4 @@ class NotesViewModel @Inject constructor(
         _error.value = null
     }
 }
+

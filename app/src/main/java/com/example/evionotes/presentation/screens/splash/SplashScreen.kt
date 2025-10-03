@@ -3,7 +3,6 @@ package com.example.evionotes.presentation.screens.splash
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,51 +20,53 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.evionotes.R
-import kotlinx.coroutines.delay
+import com.example.evionotes.presentation.viewmodel.AuthState
+import com.example.evionotes.presentation.viewmodel.AuthViewModel
 
 @Composable
-fun SplashScreen(onTimeout: () -> Unit) {
-    val logoScale = remember { Animatable(2.0f) } // Start zoomed in
+fun SplashScreen(
+    authViewModel: AuthViewModel,
+    navController: NavController
+) {
+    val logoScale = remember { Animatable(2.0f) }
     val logoAlpha = remember { Animatable(0f) }
     val logoRotation = remember { Animatable(0f) }
     val glowAlpha = remember { Animatable(0f) }
 
+    val authState by authViewModel.authState.collectAsState()
+    var navigated by remember { mutableStateOf(false) }
+
+    // Animation sequence
     LaunchedEffect(Unit) {
-        // Fade in
-        logoAlpha.animateTo(targetValue = 1f, animationSpec = tween(800))
-
-        // Zoom out with overshoot
+        logoAlpha.animateTo(1f, tween(800))
         logoScale.animateTo(
-            targetValue = 1.1f,
-            animationSpec = tween(800, easing = { OvershootInterpolator(6f).getInterpolation(it) })
+            1.1f,
+            tween(800) { OvershootInterpolator(6f).getInterpolation(it) }
         )
-
-        // Rotation animation
         logoRotation.animateTo(15f, tween(600))
         logoRotation.animateTo(0f, tween(600, easing = FastOutSlowInEasing))
-
-        // Subtle pulse (finite)
         repeat(2) {
-            logoScale.animateTo(
-                targetValue = 1.05f,
-                animationSpec = tween(400, easing = LinearEasing)
-            )
-            logoScale.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(400, easing = LinearEasing)
-            )
+            logoScale.animateTo(1.05f, tween(400))
+            logoScale.animateTo(1f, tween(400))
         }
-
-        // Last glow pulse at the end
         glowAlpha.animateTo(0.5f, tween(500))
         glowAlpha.animateTo(0f, tween(500))
-
-        delay(1000) // wait before navigating
-        onTimeout()  // navigate to next screen
     }
 
-    // Main layout
+    // Navigate once after animation finishes & user state resolved
+    LaunchedEffect(authState) {
+        if (!navigated && authState !is AuthState.Loading) {
+            if (authState is AuthState.LoggedIn) {
+                navController.navigate("home") { popUpTo("splash") { inclusive = true } }
+            } else {
+                navController.navigate("login") { popUpTo("splash") { inclusive = true } }
+            }
+            navigated = true
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()

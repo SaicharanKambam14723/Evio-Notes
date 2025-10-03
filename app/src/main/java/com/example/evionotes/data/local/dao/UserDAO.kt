@@ -1,7 +1,6 @@
 package com.example.evionotes.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -24,7 +23,7 @@ interface UserDAO {
     @Query("SELECT * FROM users WHERE isLoggedIn = 1")
     suspend fun getLoggedInUser(): UserEntity?
 
-    @Query("SELECT * FROM users WHERE isLoggedIn = 1")
+    @Query("SELECT * FROM users WHERE isLoggedIn = 1 LIMIT 1")
     fun getLoggedInUserFlow(): Flow<UserEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

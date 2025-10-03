@@ -8,10 +8,15 @@ import com.example.evionotes.domain.use_case.auth.LoginUserUseCase
 import com.example.evionotes.domain.use_case.auth.RegisterUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -20,8 +25,17 @@ class AuthViewModel @Inject constructor(
     private val loginUserUseCase: LoginUserUseCase
 ) : ViewModel() {
 
-    private val _currentUser = MutableStateFlow<User?>(null)
-    val currentUser: StateFlow<User?> = _currentUser
+    private val _authState = MutableStateFlow<AuthState>(AuthState.Loading)
+    val authState: StateFlow<AuthState> = _authState.asStateFlow()
+
+    val currentUser: StateFlow<User?> = authState
+        .map { state -> if (state is AuthState.LoggedIn) state.user else null }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = null
+        )
+
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -29,15 +43,14 @@ class AuthViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-
     init {
-        observeCurrentUser()
+        observeUser()
     }
 
-    private fun observeCurrentUser() {
+    private fun observeUser() {
         viewModelScope.launch {
             userRepository.getLoggedInUser().collect { user ->
-                _currentUser.value = user
+                _authState.value = if (user != null) AuthState.LoggedIn(user) else AuthState.LoggedOut
             }
         }
     }
@@ -48,11 +61,11 @@ class AuthViewModel @Inject constructor(
             _error.value = null
 
             registerUserUseCase(username, email, password)
-                .onSuccess {  user ->
-                    _currentUser.value = user
+                .onSuccess {
+                    // AuthState will automatically update via observeUser
                 }
-                .onFailure {  exception ->
-                    _error.value = exception.message
+                .onFailure { ex ->
+                    _error.value = ex.message
                 }
 
             _isLoading.value = false
@@ -65,11 +78,11 @@ class AuthViewModel @Inject constructor(
             _error.value = null
 
             loginUserUseCase(email, password)
-                .onSuccess {  user ->
-                    _currentUser.value = user
+                .onSuccess {
+                    // AuthState will automatically update via observeUser
                 }
-                .onFailure {  exception ->
-                    _error.value = exception.message
+                .onFailure { ex ->
+                    _error.value = ex.message
                 }
 
             _isLoading.value = false
@@ -79,7 +92,6 @@ class AuthViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch {
             userRepository.logoutUser()
-            _currentUser.value = null
         }
     }
 

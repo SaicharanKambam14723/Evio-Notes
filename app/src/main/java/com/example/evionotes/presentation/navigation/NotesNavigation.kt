@@ -1,10 +1,10 @@
 package com.example.evionotes.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -16,34 +16,20 @@ import com.example.evionotes.presentation.screens.note_detail.NoteDetailScreen
 import com.example.evionotes.presentation.screens.settings.SettingScreen
 import com.example.evionotes.presentation.screens.splash.SplashScreen
 import com.example.evionotes.presentation.viewmodel.AuthViewModel
-import okhttp3.Route
 
 @Composable
 fun NotesNavigation(
     navController: NavHostController = rememberNavController(),
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
-    val currentUser by authViewModel.currentUser.collectAsState()
-
-    val navigationScreenDst = if(currentUser != null) {
-        Routes.Home.route
-    } else {
-        Routes.Login.route
-    }
-
     NavHost(
         navController = navController,
         startDestination = Routes.Splash.route
     ) {
         composable(Routes.Splash.route) {
             SplashScreen(
-                onTimeout = {
-                    navController.navigate(navigationScreenDst) {
-                        popUpTo(Routes.Splash.route) {
-                            inclusive = true
-                        }
-                    }
-                }
+                authViewModel = authViewModel,
+                navController = navController
             )
         }
 
@@ -51,16 +37,12 @@ fun NotesNavigation(
             LoginScreen(
                 onNavigateToRegister = {
                     navController.navigate(Routes.Register.route) {
-                        popUpTo(Routes.Login.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Routes.Login.route) { inclusive = true }
                     }
                 },
                 onNavigateToHome = {
                     navController.navigate(Routes.Home.route) {
-                        popUpTo(Routes.Login.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Routes.Login.route) { inclusive = true }
                     }
                 }
             )
@@ -70,16 +52,12 @@ fun NotesNavigation(
             RegisterScreen(
                 onNavigateToLogin = {
                     navController.navigate(Routes.Login.route) {
-                        popUpTo(Routes.Register.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Routes.Register.route) { inclusive = true }
                     }
                 },
                 onNavigateToHome = {
                     navController.navigate(Routes.Home.route) {
-                        popUpTo(Routes.Register.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Routes.Register.route) { inclusive = true }
                     }
                 }
             )
@@ -95,9 +73,7 @@ fun NotesNavigation(
                 },
                 onNavigateToLogin = {
                     navController.navigate(Routes.Login.route) {
-                        popUpTo(Routes.Home.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Routes.Home.route) { inclusive = true }
                     }
                 }
             )
@@ -123,9 +99,7 @@ fun NotesNavigation(
                 },
                 onLogout = {
                     navController.navigate(Routes.Login.route) {
-                        popUpTo(Routes.Settings.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Routes.Settings.route) { inclusive = true }
                     }
                 }
             )

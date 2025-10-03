@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDAO {
-
     @Query("SELECT * FROM notes WHERE userId = :userId AND isArchived = 0 ORDER BY isPinned DESC, updatedAt DESC")
     fun getNotesPagingSource(userId: String): PagingSource<Int, NoteEntity>
 

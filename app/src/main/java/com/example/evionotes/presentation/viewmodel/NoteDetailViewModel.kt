@@ -57,8 +57,10 @@ class NoteDetailViewModel @Inject constructor(
                 if(note != null) {
                     _note.value = note
                 }
+                _isLoading.value = false
             }
         }
+
     }
 
     fun updateTitle(title: String) {
