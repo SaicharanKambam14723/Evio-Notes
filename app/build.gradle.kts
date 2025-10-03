@@ -82,6 +82,8 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+    implementation(libs.room.paging)
+    implementation(libs.paging.runtime)
 
     // DataStore
     implementation(libs.datastore.preferences)
@@ -89,6 +91,8 @@ dependencies {
     // Work / Paging
     implementation(libs.work.runtime.ktx)
     implementation(libs.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime.v336)
 
     // Networking
     implementation(libs.retrofit)
@@ -100,7 +104,9 @@ dependencies {
     // Markdown
     implementation(libs.multiplatform.markdown.renderer)
 
+    implementation(libs.mikepenz.multiplatform.markdown.renderer.m3)
 
+    implementation(libs.androidx.material.icons.extended)
 
     // Tests
     testImplementation(libs.junit)

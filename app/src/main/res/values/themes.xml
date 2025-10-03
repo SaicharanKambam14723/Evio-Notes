@@ -3,6 +3,6 @@
     <style name="Theme.EvioNotes" parent="android:Theme.Material.Light.NoActionBar">
         <!-- Transparent status bar for immersive splash -->
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

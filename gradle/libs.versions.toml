@@ -8,9 +8,11 @@ ksp = "2.0.21-1.0.27"
 coreKtx = "1.15.0"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.3"
+materialIconsExtendedVersion = "1.7.5"
 mockitoCore = "5.5.0"
 mockitoKotlin = "5.1.0"
 mockk = "1.13.8"
+multiplatformMarkdownRendererM3Version = "0.29.0"
 navigationCompose = "2.8.3"
 composeBom = "2024.09.02"
 
@@ -28,10 +30,14 @@ constraintlayoutCompose = "1.1.0"
 coreSplashscreen = "1.0.1"
 
 # Data / Persistence
+pagingCompose = "1.0.0-alpha21"
+pagingRuntime = "3.3.2"
+pagingRuntimeVersion = "3.3.6"
 room = "2.6.1"
 datastorePreferences = "1.1.1"
 
 # Work / Paging
+roomPaging = "<2.6.1>"
 uiTestJunit4 = "1.7.0"
 uiTestManifest = "1.7.0"
 workRuntimeKtx = "2.9.1"
@@ -53,15 +59,21 @@ espressoCore = "3.6.1"
 
 [libraries]
 # AndroidX
+androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIconsExtendedVersion" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
+androidx-paging-runtime-v336 = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntimeVersion" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 kotlinx-coroutines-test-v173 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTestVersion" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+mikepenz-multiplatform-markdown-renderer-m3 = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "multiplatformMarkdownRendererM3Version" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
+room-paging = { module = "androidx.room:room-paging", version.ref = "roomPaging" }
 splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 
 # Compose
